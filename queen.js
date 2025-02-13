@@ -1,71 +1,195 @@
-const readline = require("readline-sync");
+// const readline = require("readline-sync");
 
-// 5x5 array with regions (5 different colors)
-const regions = [
-    [1, 1, 1, 1, 2],
-    [3, 1, 1, 2, 2],
-    [3, 3, 4, 2, 5],
-    [3, 4, 4, 5, 5],
-    [3, 4, 4, 5, 5]
-];
+// // 5x5 array with regions (5 different colors)
+// const regions = [
+//     [1, 1, 1, 1, 2],
+//     [3, 1, 1, 2, 2],
+//     [3, 3, 4, 2, 5],
+//     [3, 4, 4, 5, 5],
+//     [3, 4, 4, 5, 5]
+// ];
 
-console.log(" 1 - Queen ")
-console.log(" 0 - Empty ")
+// // let regions = Array.from({ length: 5 }, () => Array(5).fill(0));
 
-let arrOut = Array.from({ length: 5 }, () => Array(5).fill(0)); // 5x5 array
-let placedRegions = new Set(); // Stores which regions have queens
+// // function regionGenerator(n){
 
-// Function to check if a Queen can be placed
-function isSafe(row, col) {
-    let colorRegion = regions[row][col];
+// //      for(let i=0;i<n;i++){
+// //         for(let j=0;j<n;j++){
+// //             regions[i][j]= Math.floor(Math.random() * n);
+// //         }
+// //      }
+// // }
 
-    // Check if the region is already occupied by another queen by same region
-    if (placedRegions.has(colorRegion)) return false;
+// // regionGenerator(5);
+//  console.log(regions);
 
-    // Check same row & same column
-    for (let i = 0; i < 5; i++) {
-        if (arrOut[row][i] === 1 || arrOut[i][col] === 1) return false;
-    }
 
-    // Check edges
-    for (let i = 0; i < 5; i++) {
-        for (let j = 0; j < 5; j++) {
-            if (arrOut[i][j] === 1 && Math.abs(i - row) === Math.abs(j - col)) {
-                return false;
-            }
-        }
-    }
 
-    return true;
-}
+// console.log(" 1 - Queen ")
+// console.log(" 0 - Empty ")
 
-// Function to print the board
-function printArr() {
-    console.log("\nBoard:");
-    arrOut.forEach(row => console.log("  " + JSON.stringify(row)));
-}
+// let arrOut = Array.from({ length: 5 }, () => Array(5).fill(0)); // 5x5 array
+// let placedRegions = new Set(); // Stores which regions have queens
 
-// Queen placement loop
-let q = 0;
-while (q < 5) {
+// // Function to check if a Queen can be placed
+// function isSafe(row, col) {
+//     let colorRegion = regions[row][col];
+
+//     // Check if the region is already occupied by another queen by same region
+//     if (placedRegions.has(colorRegion)) return false;
+
+//     // Check same row & same column
+//     for (let i = 0; i < 5; i++) {
+//         if (arrOut[row][i] === 1 || arrOut[i][col] === 1) return false;
+//     }
+
+//     // Check edges
+//     let directions = [
+//         [-1, -1], // Top-left 
+//         [-1,  1], // Top-right 
+//         [ 1, -1], // Bottom-left 
+//         [ 1,  1]  // Bottom-right 
+//     ];
+
+//     for (let [dx, dy] of directions) {
+//         let x = row, y = col;
+//         while (x >= 0 && x < 5 && y >= 0 && y < 5) {
+//             if (arrOut[x][y] === 1) return false;
+//             x += dx; // Move in the row direction
+//             y += dy; // Move in the column direction
+//         }
+//     }
+
+//     return true;
+
+// }
+
+// // Function to print the board
+// function printArr(arr) {
+//     arr.forEach(row => console.log("  " + JSON.stringify(row)));
+// }
+
+// // Queen placement loop
+// let q = 0;
+// while (q < 5) {
     
-    console.log(`\nEnter position to add Queen ${q + 1} (row, column):`);
-    let a = Number(readline.question());
-    let b = Number(readline.question());
+//     console.log(`\nEnter position to add Queen ${q + 1} (row, column):`);
+//     let a = Number(readline.question());
+//     let b = Number(readline.question());
 
-    if (a >= 0 && a < 5 && b >= 0 && b < 5) {
-        if (arrOut[a][b] === 0 && isSafe(a, b)) {
-            arrOut[a][b] = 1;
-            placedRegions.add(regions[a][b]); // Mark the region as occupied
-            q++;
-            printArr();
-        } else {
-            console.log(" Cannot place a queen here! Blocked by another queen or region already occupied.");
-            printArr();
-        }
-    } else {
-        console.log(" Invalid input! Enter numbers between 0 and 4.");
-    }
-}
+//     if (a >= 0 && a < 5 && b >= 0 && b < 5) {
+//         if (arrOut[a][b] === 0 && isSafe(a, b)) {
+//             arrOut[a][b] = 1;
+//             placedRegions.add(regions[a][b]); // Mark the region as occupied
+//             q++;
+//             console.log("Regions : ")
+//             printArr(regions)
+//             console.log("\n")
+//             console.log("Board : ")
+//             printArr(arrOut);
+           
+//         } else {
+//             console.log(" Cannot place a queen here! Blocked by another queen or region already occupied.");
+//             console.log("Regions : ")
+//             printArr(regions)
+//             console.log("\n")
+//             console.log("Board : ")
+//             printArr(arrOut);       
+//          }
+//     } else {
+//         console.log(" Invalid input! Enter numbers between 0 and 4.");
+//     }
+// }
 
-console.log("\n All 5 queens placed successfully!");
+// console.log("\n All 5 queens placed successfully!");
+
+//----------------------------------------------------------------
+// const readline = require("readline-sync");
+
+// // 5x5 array with regions (5 different colors)
+// const regions = [
+//     [1, 1, 1, 1, 2],
+//     [3, 1, 1, 2, 2],
+//     [3, 3, 4, 2, 5],
+//     [3, 4, 4, 5, 5],
+//     [3, 4, 4, 5, 5]
+// ];
+
+// let regions = Array.from({ length: 5 }, () => Array(5).fill(0));
+
+// function regionGenerator(n){
+
+//      for(let i=0;i<n;i++){
+//         for(let j=0;j<n;j++){
+//             regions[i][j]= Math.floor(Math.random() * n);
+//         }
+//      }
+// }
+
+// regionGenerator(5);
+
+
+//  console.log(regions);
+
+
+
+// console.log(" 1 - Queen ")
+// console.log(" 0 - Empty ")
+
+// let arrOut = Array.from({ length: 5 }, () => Array(5).fill(0)); // 5x5 array
+// let placedRegions = new Set(); // Stores which regions have queens
+// let rows = new Set(); // Stores which regions have queens
+// let cols = new Set(); // Stores which regions have queens
+// let diagonals1 = new Set(); // Stores which regions have queens
+// let diagonals2 = new Set(); // Stores which regions have queens
+
+// // Function to check if a Queen can be placed
+// function isSafe(row, col) {
+//     return !(rows.has(row) || cols.has(col) || diagonals1.has(row - col) || diagonals2.has(row + col) || placedRegions.has(regions[row][col]));
+
+
+// }
+
+// // Function to print the board
+// function printArr(arr) {
+//     arr.forEach(row => console.log("  " + JSON.stringify(row)));
+// }
+
+// // Queen placement loop
+// let q = 0;
+// while (q < 5) {
+    
+//     console.log(`\nEnter position to add Queen ${q + 1} (row, column):`);
+//     let a = Number(readline.question());
+//     let b = Number(readline.question());
+
+//     if (a >= 0 && a < 5 && b >= 0 && b < 5) {
+//         if (arrOut[a][b] === 0 && isSafe(a, b)) {
+//             arrOut[a][b] = 1;
+//             placedRegions.add(regions[a][b]); // Mark the region as occupied
+//             rows.add(a)
+//             cols.add(b)
+//             diagonals1.add(a+b)
+//             diagonals2.add(a-b)
+
+//             q++;
+//             console.log("Regions : ")
+//             printArr(regions)
+//             console.log("\n")
+//             console.log("Board : ")
+//             printArr(arrOut);
+           
+//         } else {
+//             console.log(" Cannot place a queen here! Blocked by another queen or region already occupied.");
+//             console.log("Regions : ")
+//             printArr(regions)
+//             console.log("\n")
+//             console.log("Board : ")
+//             printArr(arrOut);       
+//          }
+//     } else {
+//         console.log(" Invalid input! Enter numbers between 0 and 4.");
+//     }
+// }
+
+// console.log("\n All 5 queens placed successfully!");
