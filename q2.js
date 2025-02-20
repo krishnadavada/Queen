@@ -1,161 +1,224 @@
 const readline = require("readline-sync");
 
+//empty array for region generation
 let arrOutR;
-let placedRegions = new Set(); // Stores which regions have queens
-let arrOut = Array.from({ length: 5 }, () => Array(5).fill(0)); // 5x5 array
+let N=5
+ // array for user
+let arrOut = Array.from({ length: N }, () => Array(N).fill(0)); // 5x5 array
 
-// Function to check if a Queen can be placed
-function isSafe(row, col) {
-    // Check row and column
-    for (let i = 0; i < 5; i++) {
-        if (arrOutR[row][i] !== 0 || arrOutR[i][col] !== 0) return false;
+function arr(N){
+    let a=[]
+    for(i=0;i<N;i++){
+       a.push(i)
     }
+    return a;
+}
 
-    // Check diagonals
-    let directions = [
-        [-1, -1], [-1,  1], // Top-left, Top-right
-        [ 1, -1], [ 1,  1]  // Bottom-left, Bottom-right
-    ];
-    
-    for (let [dx, dy] of directions) {
-        let x = row + dx, y = col + dy; // Start at next diagonal position
-        while (x >= 0 && x < 5 && y >= 0 && y < 5) {
-            if (arrOutR[x][y] !== 0) return false;
-            x += dx;
-            y += dy;
+function colorGenerator(N){
+    let colors = [];
+      for(i=0;i<N;i++){
+        r=Math.floor(Math.random()*256)
+        g=Math.floor(Math.random()*256)
+        b=Math.floor(Math.random()*256)
+        clr=`rgb(${r},${g},${b})`
+        colors.push(clr)
+      }
+      return colors;
+}
+
+//check whether queen is in same row ,same column or imidiate edges
+function isSafe(row, col) {
+    // Check for same row and column
+    for (let i = 0; i < N; i++) {
+        if (arrOutR[row][i] !== 0 || arrOutR[i][col] !== 0) {
+            return false;
         }
     }
+
+    //check for imidiate edges
+    let directions=[
+        [-1,-1],[-1,0],[-1,1],
+        [0,-1],[0,1],
+        [1,-1],[1,0],[1,1]
+    ]
+
+    for (let [dx, dy] of directions) {
+        let x = row, y = col;
+        while (x >= 0 && x < 5 && y >= 0 && y < 5) {
+            if (arrOutR[x][y] !== 0) return false;
+            x += dx; 
+            y += dy; 
+        }
+    }
+
 
     return true;
 }
 
-// Function to print the board
+//print array
 function printArr(arr) {
     arr.forEach(row => console.log("  " + JSON.stringify(row)));
 }
 
-// Fisher-Yates Shuffle to randomize array order
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+//random array
+function shuffle(array){
+    let i=array.length;
+    while(i!=0){
+       let j=Math.floor(Math.random()*i)
+       i--
+       [array[i],array[j]]=[array[j],array[i]]
     }
 }
 
-// Backtracking function to place 5 queens
-function placeQueens(rowIndex = 0, queensPlaced = 0, rowOrder = [0, 1, 2, 3, 4], colors) {
-    if (queensPlaced === 5) return true; // Successfully placed 5 queens
 
-    for (let col = 0; col < 5; col++) {
-        let row = rowOrder[rowIndex]; // Use randomized row order
+//queen generator
+function placeQueens(rowIndex = 0, queensPlaced = 0, rowOrder = arr(N), colors) {
+    if (queensPlaced === N) return true;//place 5 queen successfully
+
+    for (let col = 0; col < N; col++) {
+        let row = rowOrder[rowIndex]; 
 
         if (isSafe(row, col)) {
-            arrOutR[row][col] = colors[queensPlaced];
+            arrOutR[row][col] = colors[queensPlaced]; //place queen
 
-            if (placeQueens(rowIndex + 1, queensPlaced + 1, rowOrder, colors)) return true; // Recursive call
+            if (placeQueens(rowIndex + 1, queensPlaced + 1, rowOrder, colors)) return true; //recursion
             
-            arrOutR[row][col] = 0; // Backtrack
+            arrOutR[row][col] = 0; //backtrack
         }
     }
 
-    return false; // No valid position found
+    return false;
 }
 
-// Function to generate random regions
+
+
+// random region generator
 function generateRegions() {
     let directions = [
-        [-1, 0], [1, 0], [0, -1], [0, 1] // Up, Down, Left, Right
+        [-1, -1], [-1,  0], [-1,  1], 
+        [ 0, -1],[ 0,  1],  
+        [ 1, -1], [ 1,  0], [ 1,  1]  
     ];
 
-    let emptyCells = [];
-    for (let i = 0; i < 5; i++) {
-        for (let j = 0; j < 5; j++) {
-            if (arrOutR[i][j] === 0) emptyCells.push([i, j]);
-        }
-    }
-
-    while (emptyCells.length > 0) {
-        let [row, col] = emptyCells.pop();
-        let neighborColors = new Set();
-
-        for (let [dx, dy] of directions) {
-            let x = row + dx, y = col + dy;
-            if (x >= 0 && x < 5 && y >= 0 && y < 5 && arrOutR[x][y] !== 0) {
-                neighborColors.add(arrOutR[x][y]);
+    let empty=[]
+    for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+            if (arrOutR[i][j] === 0) {
+                empty.push([i, j]);
             }
         }
+    }
 
-        if (neighborColors.size > 0) {
-            let colorArray = Array.from(neighborColors);
-            arrOutR[row][col] = colorArray[Math.floor(Math.random() * colorArray.length)];
-        } else {
-            arrOutR[row][col] = 'gray'; // Default color if no neighbors are available
+    let queen=[]
+    for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+            if (arrOutR[i][j] !== 0) {
+                queen.push([i, j]);
+            }
         }
     }
-}
 
-// Wrapper function to reset board and start placement
+
+    while(queen.length>0){
+        let [qr,qc]=queen.pop()
+        while(empty.length>0){
+            let [row,col]=empty.pop()
+            for (let [dx, dy] of directions) {
+                let clr=arrOutR[qr][qc]
+                let x = row + dx, y = col + dy;
+                if (x >= 0 && x < N && y >= 0 && y < N && arrOutR[x][y] === 0) {
+                    arrOutR[x][y] = clr;
+                }
+                else if(x >= 0 && x < N && y >= 0 && y < N && arrOutR[x][y] !== 0){
+                    let newcolor=arrOutR[x][y]
+                    i=Math.floor(Math.random()*2)
+                    if(i==1){
+                       arrOutR[row][col]=clr
+                    }
+                    else{
+                       arrOutR[row][col]=newcolor
+                    }
+                } 
+            }
+        }
+       
+    }
+   
+}  
+
+
+//generate board
 function generateBoard() {
-    arrOutR = Array.from({ length: 5 }, () => Array(5).fill(0)); // Reset board
+    arrOutR = Array.from({ length: N }, () => Array(N).fill(0)); 
 
-    let rowOrder = [0, 1, 2, 3, 4]; 
-    shuffle(rowOrder); // Randomize row order
-
-    let colors = ['red', 'green', 'blue', 'pink', 'black']; 
-    shuffle(colors); // Randomize queen colors
+    let rowOrder = arr(N); 
+    //random rowOrder aaray 
+    shuffle(rowOrder); 
+ 
+    let colors = colorGenerator(N); 
+    //random color array
+    shuffle(colors); 
 
     placeQueens(0, 0, rowOrder, colors);
-    generateRegions(); // Fill in regions after queens are placed
+
+    printArr(arrOutR)
+    generateRegions();
 }
 
-// Run the function
 generateBoard();
 console.log("\nFinal Board with Queens and Regions:");
 printArr(arrOutR);
+let placedRegion=new Set()
 
-// Queen placement loop
-function isSafeQ(row, col) {
-        let colorRegion = arrOutR[row][col];
-    
-        // Check if the region is already occupied by another queen by same region
-        if (placedRegions.has(colorRegion)) return false;
-    
-        // Check same row & same column
-        for (let i = 0; i < 5; i++) {
-            if (arrOut[row][i] === 1 || arrOut[i][col] === 1) return false;
-        }
-    
-        // Check edges
-        let directions = [
-            [-1, -1], // Top-left 
-            [-1,  1], // Top-right 
-            [ 1, -1], // Bottom-left 
-            [ 1,  1]  // Bottom-right 
-        ];
-    
-        for (let [dx, dy] of directions) {
-            let x = row, y = col;
-            while (x >= 0 && x < 5 && y >= 0 && y < 5) {
-                if (arrOut[x][y] === 1) return false;
-                x += dx; // Move in the row direction
-                y += dy; // Move in the column direction
-            }
-        }
-    
-        return true;
-    
+function safeQueen(row,col){
+
+    //for same region
+    let color=arrOutR[row][col]
+    if(placedRegion.has(color)){
+        return false
     }
+
+    for(let i=0;i<N;i++){
+        if(arrOut[row][i]===1 || arrOut[i][col]===1){
+          return false
+        }
+    }
+
+    //check imidiate edges
+    let directions=[
+        [-1,-1],[-1,0],[-1,1],
+        [0,-1],[0,1],
+        [1,-1],[1,0],[1,1]
+    ]
+
+    for(let [dx,dy] of directions){
+        let x=row
+        let y=col
+        while(x>=0 && x<N && y>=0 && y<N){
+            if(arrOut[x][y]===1){
+                return false
+            }
+            x+=dx
+            y+=dy
+        }
+    }
+
+    return true
+
+}
+
 let q = 0;
-while (q < 5) {
+while (q < N) {
     
     console.log(`\nEnter position to add Queen ${q + 1} (row, column):`);
     let a = Number(readline.question());
     let b = Number(readline.question());
 
-    if (a >= 0 && a < 5 && b >= 0 && b < 5) {
-        if (arrOut[a][b] === 0 && isSafeQ(a, b)) {
+    if (a >= 0 && a < N && b >= 0 && b < N) {
+        if (arrOut[a][b] === 0 && safeQueen(a, b)) {
             arrOut[a][b] = 1;
-            placedRegions.add(arrOutR[a][b]); // Mark the region as occupied
+            //add color in placed region
+            placedRegion.add(arrOutR[a][b]);
             q++;
             console.log("Regions : ")
             printArr(arrOutR)
@@ -177,3 +240,4 @@ while (q < 5) {
 }
 
 console.log("\n All 5 queens placed successfully!");
+
