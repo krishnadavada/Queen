@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queen Game</title>
+    <style>
+        body{
+            background-color: #f1eaea;
+        }
+        p{
+            font-size: 40px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 50px;
+        } 
+        #ruleBox{
+            height: 210px;
+            width: 340px;
+            border: 2px solid black;
+            border-radius: 10px;
+        }
+        div{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        h2{
+            text-align: center;
+        }
+        ol{
+            font-size: 17px;
+        }
+        td{
+            width: 70px;
+            height: 70px;
+            border: 3px solid black;
+            border-radius: 5px;
+            font-size: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+   
+    <p>👑 Queen Game 👑</p>
+    <div>
+        <div id="ruleBox">
+            <h2>How to play</h2>
+            <ol>
+             <li>Queen can't be placed in same Row and same column.</li>
+             <li>Queen can't be placed imidiate edges to other queen.</li>
+             <li>Queen can't be placed in Same Region.</li>
+             <li>Tap twice to remove queen.</li>
+            </ol>
+         </div>
+    </div>
+
+    <div>
+
+    </div>
+        
+   
+    <!-- Example 1: Click Event -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

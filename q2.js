@@ -118,31 +118,38 @@ function generateRegions() {
         }
     }
 
+    shuffle(queen)
 
     while(queen.length>0){
         let [qr,qc]=queen.pop()
-        while(empty.length>0){
-            let [row,col]=empty.pop()
             for (let [dx, dy] of directions) {
-                let clr=arrOutR[qr][qc]
-                let x = row + dx, y = col + dy;
+                let x = qr + dx, y = qc + dy;
                 if (x >= 0 && x < N && y >= 0 && y < N && arrOutR[x][y] === 0) {
-                    arrOutR[x][y] = clr;
-                }
-                else if(x >= 0 && x < N && y >= 0 && y < N && arrOutR[x][y] !== 0){
-                    let newcolor=arrOutR[x][y]
-                    i=Math.floor(Math.random()*2)
-                    if(i==1){
-                       arrOutR[row][col]=clr
-                    }
-                    else{
-                       arrOutR[row][col]=newcolor
-                    }
-                } 
+                    arrOutR[x][y] = arrOutR[qr][qc]
+                }   
             }
         }
        
-    }
+        for(let x=0;x<N;x++){
+            for(let y=0;y<N;y++){
+                if(arrOutR[x][y]==0){
+                    if(x==0 && y==0){
+                        arrOutR[x][y]=arrOutR[x+1][y]
+                    }
+                    else if(x==4 && y==0){
+                        arrOutR[x][y]=arrOutR[x-1][y]
+                    }
+                    else if(x==0 && y==4){
+                        arrOutR[x][y]=arrOutR[x+1][y]
+                    }
+                    else if(x==4 && y==4){
+                        arrOutR[x][y]=arrOutR[x-1][y]
+                    }
+                }
+            }
+        }
+        
+      
    
 }  
 
