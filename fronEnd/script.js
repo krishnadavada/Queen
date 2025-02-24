@@ -1,7 +1,17 @@
 let arrOutR;
-let N=5
+
+let N;//default
+
+//start the game
+function start(){
+    let inp=document.getElementById('inp')
+    let N=parseInt(inp.value);
+    div.innerHTML=''
+    board(N)
+}
+
  // array for user
-let arrOut = Array.from({ length: N }, () => Array(N).fill(0)); // 5x5 array
+let arrOut = Array.from({ length: N }, () => Array(N).fill(0)); // NxN array
 
 //array generator
 function arr(N){
@@ -26,7 +36,8 @@ function colorGenerator(N){
 }
 
 //check whether queen is in same row ,same column or imidiate edges
-function isSafe(row, col) {
+//isSafe for queen generator
+function isSafe(row, col,N) {
     // Check for same row and column
     for (let i = 0; i < N; i++) {
         if (arrOutR[row][i] !== 0 || arrOutR[i][col] !== 0) {
@@ -43,7 +54,7 @@ function isSafe(row, col) {
 
     for (let [dx, dy] of directions) {
         let x = row, y = col;
-        while (x >= 0 && x < 5 && y >= 0 && y < 5) {
+        while (x >= 0 && x < N && y >= 0 && y < N) {
             if (arrOutR[x][y] !== 0) return false;
             x += dx; 
             y += dy; 
@@ -71,16 +82,16 @@ function shuffle(array){
 
 
 //queen generator
-function placeQueens(rowIndex = 0, queensPlaced = 0, rowOrder = arr(N), colors) {
-    if (queensPlaced === N) return true;//place 5 queen successfully
+function placeQueens(rowIndex = 0, queensPlaced = 0, rowOrder = arr(N), colors,N) {
+    if (queensPlaced === N) return true;//place N queen successfully
 
     for (let col = 0; col < N; col++) {
         let row = rowOrder[rowIndex]; 
 
-        if (isSafe(row, col)) {
+        if (isSafe(row, col,N)) {
             arrOutR[row][col] = colors[queensPlaced]; //place queen
 
-            if (placeQueens(rowIndex + 1, queensPlaced + 1, rowOrder, colors)) return true; //recursion
+            if (placeQueens(rowIndex + 1, queensPlaced + 1, rowOrder, colors,N)) return true; //recursion
 
             arrOutR[row][col] = 0; //backtrack
         }
@@ -89,63 +100,63 @@ function placeQueens(rowIndex = 0, queensPlaced = 0, rowOrder = arr(N), colors) 
     return false;
 }
 
+//emptycell function
+function emptyCell(arrOutR,N){
+    let emptyCells = [];
+        for (let i = 0; i < N; i++) {
+            for (let j = 0; j < N; j++) {
+                if (arrOutR[i][j] === 0) emptyCells.push([i, j]);
+            }
+        }
+    return emptyCells;
+}
 
+//pick random empty cell
+function pickRandomCell(emptyCells) {
+    return emptyCells.splice(Math.floor(Math.random() * emptyCells.length), 1)[0];
+}
 
-// random region generator
-function generateRegions() {
+//get the color from nearer cell
+function getNearColor(arrOutR,row,col,N){
+    let nearByClr=new Set()
     let directions = [
-        [-1, -1], [-1,  1], 
-        [ 1, -1], [ 1,  1]  
+        [-1, 0], [1, 0], [0, -1], [0, 1] // Up, Down, Left, Right
     ];
-
-    let empty=[]
-    for (let i = 0; i < N; i++) {
-        for (let j = 0; j < N; j++) {
-            if (arrOutR[i][j] === 0) {
-                empty.push([i, j]);
-            }
+    for (let [dx, dy] of directions) {
+        let x = row + dx, y = col + dy;
+        if (x >= 0 && x < N && y >= 0 && y < N && arrOutR[x][y] !== 0) {
+            nearByClr.add(arrOutR[x][y]);
         }
     }
+    return nearByClr;
+}
 
-    let queen=[]
-    for (let i = 0; i < N; i++) {
-        for (let j = 0; j < N; j++) {
-            if (arrOutR[i][j] !== 0) {
-                queen.push([i, j]);
-            }
-        }
+//assign color to selected cell
+function assignClr(arrOutR,row,col,nearByClr){
+    if(nearByClr.size>0){
+        let colorArray = Array.from(nearByClr);
+        arrOutR[row][col] = colorArray[Math.floor(Math.random() * colorArray.length)];
     }
+}
 
-
-    while(queen.length>0){
-        let [qr,qc]=queen.pop()
-        while(empty.length>0){
-            let [row,col]=empty.pop()
-            for (let [dx, dy] of directions) {
-                let clr=arrOutR[qr][qc]
-                let x = row + dx, y = col + dy;
-                if (x >= 0 && x < N && y >= 0 && y < N && arrOutR[x][y] === 0) {
-                    arrOutR[x][y] = clr;
-                }
-                else if(x >= 0 && x < N && y >= 0 && y < N && arrOutR[x][y] !== 0){
-                    let newcolor=arrOutR[x][y]
-                    i=Math.floor(Math.random()*2)
-                    if(i==1){
-                       arrOutR[row][col]=clr
-                    }
-                    else{
-                       arrOutR[row][col]=newcolor
-                    }
-                } 
-            }
+//fill the remaining cell with color
+function fillBoardClr(arrOutR,N){
+    let emptyCells = emptyCell(arrOutR,N);
+    while(emptyCells.length>0){
+        let [row,col] = pickRandomCell(emptyCells);
+        let nearByClr = getNearColor(arrOutR,row,col,N)
+        if(nearByClr.size===0){
+            emptyCells.push([row,col])
+            continue;
         }
-
+        assignClr(arrOutR,row,col,nearByClr)
     }
-
-}  
-
+ 
+   return arrOutR;
+}
+    
 //generate board
-function generateBoard() {
+function generateBoard(N) {
     arrOutR = Array.from({ length: N }, () => Array(N).fill(0)); 
 
     let rowOrder = arr(N); 
@@ -156,9 +167,10 @@ function generateBoard() {
     //random color array
     shuffle(colors); 
 
-    placeQueens(0, 0, rowOrder, colors);
+    placeQueens(0, 0, rowOrder, colors,N);
 
-    generateRegions();
+    fillBoardClr(arrOutR,N)
+
 }
 
 //-------------------------------------------------------------------------------------------------------
@@ -178,7 +190,8 @@ body.appendChild(div)
 let placedRegion=new Set()
 let q=0
 
-function safeQueen(row,col,val){
+//safeQueen for user 
+function safeQueen(row,col,N){
     
     //for same row and col
     for(let i=0;i<N;i++){
@@ -229,9 +242,10 @@ function safeQueen(row,col,val){
 
 }
 
-function board(){
+//generate NXN board for user to play
+function board(N){
 
-    generateBoard();
+    generateBoard(N);
 
     let table = document.createElement('table')
     div.append(table)
@@ -253,11 +267,11 @@ function board(){
                 let col = cell.cellIndex
                 let val=cell.textContent
                 if(qp){
-                    if(val==='' && safeQueen(row,col,val)){
+                    if(val==='' && safeQueen(row,col,N)){
                          cell.textContent='👑'
                          placedRegion.add(arrOutR[row][col])
                          q++
-                         if(q===5){
+                         if(q===N){
                             showCongrats()
                         }
                     }
@@ -281,47 +295,21 @@ function board(){
 
 //if 5 queen is placed then call below function
 function showCongrats(){
-    let div1=document.createElement('div')
-    div1.style.background='rgba(0, 0, 0, 0.5)'
-    div1.style.position='fixed'
-    div1.style.top='0'
-    div1.style.left='0'
-    div1.style.width='100%'
-    div1.style.height='100%'
+
+    let div1=document.getElementById('congrats')
     div1.style.display='flex'
-    div1.style.alignItems='center'
-    div1.style.justifyContent='center'
-    body.appendChild(div1)
 
-    let div2=document.createElement('div')
-    div2.style.backgroundColor='white'
-    div2.style.borderRadius='10px'
-    div2.style.padding='20px'
-    div2.style.textAlign='center'
-    div1.appendChild(div2)
-
-    let h2=document.createElement('h2')
-    h2.textContent='🎉 Congratulations! 🎉'
-    div2.appendChild(h2)
-
-    let p=document.createElement('p')
-    p.textContent='You have placed all queens on the board!'
-    div2.appendChild(p)
-
-    let button=document.createElement('button')
-    button.textContent='Play Again'
-    button.style.padding='10px'
-    button.style.borderRadius='10px'
-    button.style.backgroundColor='green'
-    button.style.fontSize='20px'
-    div2.appendChild(button)
-    button.addEventListener('click',function(){
-        q=0
-        div1.style.display='none'
-        div.innerHTML=" "
-        board()
-    })
 }
 
-
-board()
+//to start the game
+function play(){
+    let button=document.getElementsByTagName('button')
+    let div1=document.getElementById('congrats')
+    q=0
+    let inp=document.getElementById('inp')
+    let N=parseInt(inp.value);
+    div.innerHTML=" "
+    document.querySelectorAll('td').forEach(cell=>cell.textContent='')
+    div1.style.display='none'
+    board(N)
+}

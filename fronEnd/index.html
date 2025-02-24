@@ -5,49 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Queen Game</title>
-    <style>
-        body{
-            background-color: #f1eaea;
-        }
-        p{
-            font-size: 40px;
-            text-align: center;
-            font-weight: bold;
-            margin-top: 50px;
-        } 
-        #ruleBox{
-            height: 210px;
-            width: 340px;
-            border: 2px solid black;
-            border-radius: 10px;
-        }
-        div{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-        h2{
-            text-align: center;
-        }
-        ol{
-            font-size: 17px;
-        }
-        td{
-            width: 70px;
-            height: 70px;
-            border: 3px solid black;
-            border-radius: 5px;
-            font-size: 30px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
    
-    <p>👑 Queen Game 👑</p>
-    <div>
+    <p id="heading">👑 Queen Game 👑</p>
+    <div id="userInp">
+        <input type="number" placeholder="Enter NXN : " id="inp">
+        <button id="start-btn" onclick="start()">Start Game</button>
+    </div>
+   
+
+    <div id="board">
         <div id="ruleBox">
             <h2>How to play</h2>
             <ol>
@@ -59,8 +29,12 @@
          </div>
     </div>
 
-    <div>
-
+    <div id="congrats">
+       <div id="cbox">
+          <h2>🎉 Congratulations! 🎉</h2>
+          <p id="box">You have placed all queens on the board!</p>
+          <button onclick="play()">Play Again</button>
+       </div>
     </div>
         
    
@@ -71,3 +45,4 @@
 </body>
 
 </html>
+
