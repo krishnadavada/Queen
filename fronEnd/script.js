@@ -1,6 +1,6 @@
 let arrOutR;
 
-let N;//default
+let N;
 
 //start the game
 function start(){
@@ -9,9 +9,6 @@ function start(){
     div.innerHTML=''
     board(N)
 }
-
- // array for user
-let arrOut = Array.from({ length: N }, () => Array(N).fill(0)); // NxN array
 
 //array generator
 function arr(N){
